@@ -2,24 +2,30 @@
 
 set -e
 
-export PHP_VERSION=5.5.14
+export PHP_VERSION=5.4.30
 
-cd /var/cache
+# Overrie it
+cp /gd_io.h /usr/include/
 
-#if [ ! -f /var/cache/php-${PHP_VERSION}.tar.bz2 ]; then
-#  wget -q -o php-${PHP_VERSION}.tar.bz2 http://www.php.net/get/php-${PHP_VERSION}.tar.bz2/from/this/mirror
-#fi
-tar jvxf php-${PHP_VERSION}.tar.bz2
+cd /var/cache/php
+if [ ! -f /var/cache/php/php-${PHP_VERSION}.tar.bz2 ]; then
+  wget -q -O /var/cache/php/php-${PHP_VERSION}.tar.bz2 http://www.php.net/get/php-${PHP_VERSION}.tar.bz2/from/this/mirror
+fi
+tar jxf /var/cache/php/php-${PHP_VERSION}.tar.bz2
 
-pushd /var/cache/php-${PHP_VERSION}
-./configure --prefix=/app/php --enable-fastcgi --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd
+pushd php-${PHP_VERSION}
+ ./configure --prefix=/app/php --with-mysql=shared,mysqlnd --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-mcrypt=shared,/usr --with-gd=shared,/usr
 make
 make install
 popd
 
+cp /usr/lib64/libmcrypt.so.4.4.8 /app/php/lib/
+pushd /app/php/lib
+ln -s libmcrypt.so.4.4.8 libmcrypt.so
+ln -s libmcrypt.so.4.4.8 libmcrypt.so.4
+popd
+
 cd /app
 tar cjvf php-${PHP_VERSION}.tar.bz2 php
-mkdir -p /var/cache/out
-cp php-${PHP_VERSION}.tar.bz2 /var/cache/out
-
-
+mkdir -p /var/cache/php/out
+cp php-${PHP_VERSION}.tar.bz2 /var/cache/php/out
