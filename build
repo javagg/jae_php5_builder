@@ -14,7 +14,7 @@ fi
 tar jxf /var/cache/php/php-${PHP_VERSION}.tar.bz2
 
 pushd php-${PHP_VERSION}
- ./configure --prefix=/app/php --with-mysql=shared,mysqlnd --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-mcrypt=shared,/usr --with-gd=shared,/usr
+ ./configure --prefix=/app/php --with-mysql=shared,mysqlnd --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd --with-mcrypt=shared,/usr --with-gd=shared,/usr --enable-mbstring --enable-fpm --enable-sysvsem --enable-sysvshm --enable-zip --with-pcre-regex --enable-mbregex --enable-pcntl --enable-sockets --with-zlib --disable-debug --disable-rpath --enable-inline-optimization
 make
 make install
 popd
